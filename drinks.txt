@@ -1,0 +1,6 @@
+Coca-Cola
+Fanta
+Tea
+Beer
+Water
+Cocktail

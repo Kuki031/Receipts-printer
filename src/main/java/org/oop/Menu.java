@@ -1,13 +1,19 @@
 package org.oop;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 public class Menu {
 
     /*
     0.) Add quantity of the selected item ++++
-    1.) Add more items in the list
-        -> Optionally, read menu from the .txt file and populate HashMap accordingly along with prices
-    2.) Convert arrays below into HashMaps (name, price)
-        -> You'll need to refactor the Main and Order classes as well
+    1.) Add more items in the list ++++
+        -> Optionally, read menu from the .txt file and populate HashMap accordingly along with prices ++++
+    2.) Convert arrays below into HashMaps (name, price) ++++
+        -> You'll need to refactor the Main and Order classes as well ++++
     3.) Implement classes (Burger, Drink, SideItem)
     4.) Compose Order class
     5.) Add receipt class for printing receipt
@@ -21,12 +27,16 @@ public class Menu {
      8.) Store all receipts on C:\\ disk in a folder named "Receipts"
     */
 
-    private final String[] burgers = {"Big Mac", "Cowboy", "Cheeseburger", "Hamburger"};
-    private final String[] drinks = {"Coca-Cola", "Tea", "Beer", "Water", "Milk"};
-    private final String[] sideItems = {"Ketchup", "Mayo", "Tartar"};
+    private Map<String, Double> burgersMap = new HashMap<String, Double>();
+    private Map<String, Double> drinksMap = new HashMap<String, Double>();
+    private Map<String, Double> sideMap = new HashMap<String, Double>();
 
     private static Menu instance;
-    private Menu() {}
+    private Menu() {
+        populateMenuFromFiles("burgers.txt", "burgerPrices.txt", burgersMap);
+        populateMenuFromFiles("drinks.txt", "drinksPrices.txt", drinksMap);
+        populateMenuFromFiles("side.txt", "sidePrices.txt", sideMap);
+    }
 
     public static Menu getInstance() {
 
@@ -37,22 +47,24 @@ public class Menu {
         return instance;
     }
 
-    public String[] getBurgers() {
-        return burgers;
+    public Map<String, Double> getBurgersMap() {
+        return burgersMap;
     }
 
-    public String[] getDrinks() {
-        return drinks;
+    public Map<String, Double> getDrinksMap() {
+        return drinksMap;
     }
 
-    public String[] getSideItems() {
-        return sideItems;
+    public Map<String, Double> getSideMap() {
+        return sideMap;
     }
 
-    public void listMenu(String[] items, String item) {
+    public void listMenu(Map<String, Double> items, String item) {
         System.out.printf("Our %s menu consists of:\n", item);
-        for(int i = 0 ; i < items.length ; i++) {
-            System.out.printf("%d. %s\n", i + 1, items[i]);
+        int i = 0;
+        for (Map.Entry<String, Double> menu : items.entrySet()) {
+            i++;
+            System.out.printf("%d. %s %s €%.2f\n",i, menu.getKey(),"-".repeat(2), menu.getValue());
         }
     }
     public String decideOnMenu(String menuDecision) {
@@ -66,38 +78,48 @@ public class Menu {
         return menuDecision;
     }
 
-    public void listDecidedMenu(String decidedMenu, Menu menu) {
-        switch (decidedMenu) {
-            case "Drinks":
-                menu.listMenu(menu.getDrinks(), decidedMenu);
-                break;
-            case "Burgers":
-                menu.listMenu(menu.getBurgers(), decidedMenu);
-                break;
-            case "Side item":
-                menu.listMenu(menu.getSideItems(), decidedMenu);
-                break;
+    private void populateMenuFromFiles(String itemName, String itemPrice, Map<String, Double> map) {
+        try {
+            File name = new File(itemName);
+            File price = new File(itemPrice);
+            Scanner nameReader = new Scanner(name);
+            Scanner priceReader = new Scanner(price);
+            while (nameReader.hasNextLine() && priceReader.hasNextLine()) {
+                String readName = nameReader.nextLine();
+                String readPrice = priceReader.nextLine();
+                map.put(readName, Double.valueOf(readPrice));
+            }
+            nameReader.close();
+            priceReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred. File was not found.");
+            e.printStackTrace();
         }
     }
 
-    public double assignRandomPrice(String itemType) {
-        double setPrice = 0.0;
-        switch (itemType) {
-            case "d", "D" -> setPrice = Math.random() * 3.0;
-            case "b", "B" -> setPrice = Math.random() * 7.0;
-            case "s", "S" -> setPrice = Math.random();
+    public String decideOnItem(String itemName, Map<String, Double> items) {
+        boolean exists = false;
+        for (Map.Entry<String, Double> menu : items.entrySet()) {
+            if (itemName.equalsIgnoreCase(menu.getKey())) {
+                exists = true;
+                if (exists) {
+                    itemName = menu.getKey();
+                    break;
+                }
+            }
         }
-        return setPrice;
+        if (!exists) return "";
+        return itemName;
     }
 
-    public String decideOnItem(int itemNo, String[] items) {
-        String itemToPlaceInOrder = "";
-        for(int i = 0 ; i < items.length ; i++) {
-            if (i == itemNo - 1) {
-                itemToPlaceInOrder = items[i];
+    public double readItemPrice(String itemName, Map<String, Double> items) {
+        double price = 0.0;
+        for(Map.Entry<String, Double> menu : items.entrySet()) {
+            if (itemName.equalsIgnoreCase(menu.getKey())) {
+                price = menu.getValue();
                 break;
             }
         }
-        return itemToPlaceInOrder;
+        return price;
     }
 }
