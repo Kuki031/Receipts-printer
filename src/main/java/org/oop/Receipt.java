@@ -28,9 +28,16 @@ public class Receipt {
     }
 
     public void writeReceipt () {
+        int i = 0;
         try {
             FileWriter writter = new FileWriter("C:\\Receipts\\receipt" + "#"+this.receiptID+".txt");
-            writter.write("yay");
+            for (Map.Entry<String, Double> menu : items.entrySet()) {
+                i++;
+                writter.write("_".repeat(20)+'\n');
+                writter.write(i+". "+menu.getKey()+" "+"|"+" "+menu.getValue()+"€"+'\n');
+            }
+            writter.write("_".repeat(20)+'\n');
+            writter.write("Total: "+ this.total+"€");
             writter.close();
             System.out.println("Receipt written successfully.");
         } catch (IOException e) {

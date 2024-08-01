@@ -107,6 +107,7 @@ public class Main {
                         if (wantsToEditOrder.equalsIgnoreCase("y")) {
                             System.out.println("Please enter the name of the item you would like to remove.");
                             Thread.sleep(500);
+
                             generateOrder(orderList);
                             String itemToRemove = scanner.nextLine().toLowerCase();
                             String removedItem = menu.modifyOrderList(orderList, itemToRemove);
@@ -129,10 +130,7 @@ public class Main {
             System.out.println("Creating repository on C partition.");
             createEmptyReceiptRepository();
             if (Repository.getInstance().isDoesExist()) {
-                Repository.getInstance().open("C:\\Receipts");
-                Receipt receipt = new Receipt(orderList, totalExpense);
-                receipt.writeReceipt();
-                Repository.getInstance().open("C:\\Receipts\\receipt#"+receipt.getReceiptID()+".txt");
+                generateReceipt(Repository.getInstance());
             }
         }
     }
@@ -143,6 +141,13 @@ public class Main {
         for (Map.Entry<String, Double> order : map.entrySet()) {
             System.out.printf("%s %s €%.2f\n", order.getKey(), "-".repeat(4), order.getValue());
         }
+    }
+
+    private static void generateReceipt(Repository repository) throws IOException {
+        repository.open("C:\\Receipts");
+        Receipt receipt = new Receipt(orderList, totalExpense);
+        receipt.writeReceipt();
+        repository.open("C:\\Receipts\\receipt#"+receipt.getReceiptID()+".txt");
     }
 
     private static void generateInfoStatement(Map<String, Double> map, String newItem, int quantity, double itemPrice, double totalExpense) {
