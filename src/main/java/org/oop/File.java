@@ -11,10 +11,7 @@ import java.util.Scanner;
 public class File {
     /*Opening file
         open("C:\\Users\\Kukac\\Desktop\\test");
-        */
 
-        /*System.out.println("Welcome to the restaurant!\nWould you like to place the order?(Y/N)");
-    boolean decision = false;
 
     /*Creating empty directory*/
 //    try {
@@ -48,25 +45,3 @@ public class File {
 //        e.printStackTrace();
 //    }
 //
-//    /*Read from file*/
-//        try {
-//        java.io.File myObj = new java.io.File("C:\\Receipts\\demo1.txt");
-//        Scanner myReader = new Scanner(myObj);
-//        while (myReader.hasNextLine()) {
-//            String data = myReader.nextLine();
-//            System.out.println(data);
-//        }
-//        myReader.close();
-//    } catch (
-//    FileNotFoundException e) {
-//        System.out.println("An error occurred.");
-//        e.printStackTrace();
-//    }
-//}
-//public static void open(String targetFilePath) throws IOException
-//{
-//    Desktop desktop = Desktop.getDesktop();
-//
-//    desktop.open(new File(targetFilePath));
-//}
-//}

@@ -1,5 +1,6 @@
 package org.oop;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
@@ -10,10 +11,9 @@ public class Main {
     private static Map<String, Double> orderList = new HashMap<String, Double>();
     private static double totalExpense = 0.0;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         System.out.println("Would you like to place the order?(Y/N)");
-        boolean decision = false;
-
+        boolean decision;
 
         while (true) {
             String decisionOnOrder = scanner.nextLine();
@@ -22,45 +22,44 @@ public class Main {
                 break;
             } else if (decisionOnOrder.equalsIgnoreCase("n")) {
                 System.out.println("Goodbye!");
+                decision = false;
                 break;
             } else {
-                System.out.println("Wrong input! Please enter either Y or N!");
+                System.err.println("Wrong input. Please enter either Y or N.");
             }
         }
 
         if (decision) {
-            while (true) {
+            boolean continueOrder = true;
+            while (continueOrder) {
 
                 String wantsToContinueTheOrder;
                 boolean hasDecidedOnMenu = false;
                 String menuDecision = "";
-                Map<String, Double> selectedMenu = new HashMap<String, Double>();
+                Map<String, Double> selectedMenu = new HashMap<>();
                 String chosenItem;
                 String decidedItemFromMenu;
-                String wantsToEditOrder;
                 double itemPrice = 0.0;
                 int quantity = 1;
-
 
                 System.out.println("Menu will load shortly... Please wait.");
                 Thread.sleep(THREAD_DELAY);
 
-
                 while (true) {
                     System.out.println("Which menu would you like to list? Please enter 'D' for drinks, 'B' for burgers or 'S' for side items!");
                     menuDecision = scanner.nextLine();
-                    switch (menuDecision) {
-                        case "d", "D" -> {
+                    switch (menuDecision.toLowerCase()) {
+                        case "d" -> {
                             menu.listMenu(menu.getDrinksMap(), "drinks");
                             selectedMenu = menu.getDrinksMap();
                             hasDecidedOnMenu = true;
                         }
-                        case "b", "B" -> {
+                        case "b" -> {
                             menu.listMenu(menu.getBurgersMap(), "burgers");
                             selectedMenu = menu.getBurgersMap();
                             hasDecidedOnMenu = true;
                         }
-                        case "s", "S" -> {
+                        case "s" -> {
                             menu.listMenu(menu.getSideMap(), "side items");
                             selectedMenu = menu.getSideMap();
                             hasDecidedOnMenu = true;
@@ -70,7 +69,7 @@ public class Main {
                         }
                     }
                     if (hasDecidedOnMenu) break;
-                    else System.out.println("Wrong input. Enter either D, B or S.");
+                    else System.err.println("Wrong input. Enter either D, B or S.");
                 }
 
                 while (true) {
@@ -78,7 +77,7 @@ public class Main {
                     decidedItemFromMenu = scanner.nextLine().toLowerCase();
                     chosenItem = menu.decideOnItem(decidedItemFromMenu, selectedMenu);
                     if (chosenItem.isBlank() || chosenItem.isEmpty()) {
-                        System.out.println("Item in the menu does not exist. Please try again.");
+                        System.err.println("Item in the menu does not exist. Please try again.");
                     } else {
                         while (true) {
                             System.out.printf("Enter the quantity for item %s: ", chosenItem);
@@ -91,10 +90,10 @@ public class Main {
                                 totalExpense += itemPrice;
                                 break;
                             } catch (NumberFormatException e) {
-                                System.out.println("Invalid input. Must be a positive integer value.");
+                                System.err.println("Invalid input. Must be a positive integer value.");
                             }
                         }
-                        orderList.put(chosenItem + " x " + quantity,itemPrice);
+                        orderList.put(chosenItem + " x " + quantity, itemPrice);
                         break;
                     }
                 }
@@ -102,31 +101,35 @@ public class Main {
                 generateInfoStatement(orderList, chosenItem, quantity, itemPrice, totalExpense);
                 wantsToContinueTheOrder = scanner.nextLine();
                 if (wantsToContinueTheOrder.equalsIgnoreCase("q")) {
-                    while(true) {
+                    while (true) {
                         System.out.println("Enter 'Y' to edit your order.\nEnter any key to continue to checkout.");
-                        wantsToEditOrder = scanner.nextLine();
+                        String wantsToEditOrder = scanner.nextLine();
                         if (wantsToEditOrder.equalsIgnoreCase("y")) {
-                            String itemToRemove;
-                            String removedItem;
                             System.out.println("Please enter the name of the item you would like to remove.");
                             Thread.sleep(500);
                             generateOrder(orderList);
-                            itemToRemove = scanner.nextLine().toLowerCase();
-                            removedItem = menu.modifyOrderList(orderList, itemToRemove);
-                            System.out.printf("Item %s removed from the order.\n", removedItem);
+                            String itemToRemove = scanner.nextLine().toLowerCase();
+                            String removedItem = menu.modifyOrderList(orderList, itemToRemove);
+                            if (removedItem != null) {
+                                System.out.printf("Item %s removed from the order.\n", removedItem);
+                                totalExpense -= menu.getPriceToDeduct();
+                                if (totalExpense < 0) totalExpense = 0;
+                            } else {
+                                System.err.println("Item not found in the order.");
+                            }
                             Thread.sleep(1000);
                             generateOrder(orderList);
-                            if (totalExpense > 0) {
-                                totalExpense -= menu.getPriceToDeduct();
-                            } else {
-                                System.out.println("Your order is empty.");
-                            }
                         } else {
+                            continueOrder = false;
                             break;
                         }
                     }
-                    break;
                 }
+            }
+            System.out.println("Creating repository on C partition.");
+            createEmptyReceiptRepository();
+            if (Repository.getInstance().isDoesExist()) {
+                Repository.getInstance().open("C:\\Receipts");
             }
         }
     }
@@ -152,7 +155,11 @@ public class Main {
         for (Map.Entry<String, Double> order : map.entrySet()) {
             System.out.printf("%s %s €%.2f\n", order.getKey(), "-".repeat(4), order.getValue());
         }
-        System.out.println("Enter any key to order something else.");
+        System.out.println("-".repeat(20) +"\nEnter any key to order something else.");
         System.out.println("Enter 'q' to continue.");
+    }
+
+    private static void createEmptyReceiptRepository() {
+        Repository.getInstance();
     }
 }
