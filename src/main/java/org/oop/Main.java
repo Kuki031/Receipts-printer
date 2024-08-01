@@ -130,6 +130,9 @@ public class Main {
             createEmptyReceiptRepository();
             if (Repository.getInstance().isDoesExist()) {
                 Repository.getInstance().open("C:\\Receipts");
+                Receipt receipt = new Receipt(orderList, totalExpense);
+                receipt.writeReceipt();
+                Repository.getInstance().open("C:\\Receipts\\receipt#"+receipt.getReceiptID()+".txt");
             }
         }
     }

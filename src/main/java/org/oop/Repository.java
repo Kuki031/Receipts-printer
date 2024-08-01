@@ -28,7 +28,7 @@ public class Repository {
         return doesExist;
     }
 
-    private void createEmptyRepository() {
+    protected void createEmptyRepository() {
         try {
             Path path = Paths.get("C:\\Receipts");
             if (path != null) doesExist = true;
