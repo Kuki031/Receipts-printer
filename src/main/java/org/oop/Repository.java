@@ -31,7 +31,7 @@ public class Repository {
     protected void createEmptyRepository() {
         try {
             Path path = Paths.get("C:\\Receipts");
-            if (path != null) doesExist = true;
+            doesExist = true;
             Files.createDirectories(path);
         } catch (IOException e) {
             System.err.println("Failed to create directory." + e.getMessage());

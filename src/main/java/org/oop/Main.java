@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class Main {
-    private static Menu menu = Menu.getInstance();
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Menu menu = Menu.getInstance();
+    private static final Scanner scanner = new Scanner(System.in);
     private static final int THREAD_DELAY = (int) (1000 + Math.floor(Math.random() * 1500));
 
-    private static Map<String, Double> orderList = new HashMap<String, Double>();
+    private static final Map<String, Double> orderList = new HashMap<String, Double>();
     private static double totalExpense = 0.0;
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -119,6 +119,7 @@ public class Main {
                                 System.err.println("Item not found in the order.");
                             }
                             Thread.sleep(1000);
+
                             generateOrder(orderList);
                         } else {
                             continueOrder = false;

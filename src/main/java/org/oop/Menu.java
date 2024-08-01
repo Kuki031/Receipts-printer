@@ -8,16 +8,18 @@ import java.util.Scanner;
 
 public class Menu {
 
-    private Map<String, Double> burgersMap = new HashMap<String, Double>();
-    private Map<String, Double> drinksMap = new HashMap<String, Double>();
-    private Map<String, Double> sideMap = new HashMap<String, Double>();
+    private final Map<String, Double> burgersMap = new HashMap<String, Double>();
+    private final Map<String, Double> drinksMap = new HashMap<String, Double>();
+    private final Map<String, Double> sideMap = new HashMap<String, Double>();
+    private final static String path = "./src/main/resources/";
+
     private double priceToDeduct;
 
     private static Menu instance;
     private Menu() {
-        populateMenuFromFiles("burgers.txt", "burgerPrices.txt", burgersMap);
-        populateMenuFromFiles("drinks.txt", "drinksPrices.txt", drinksMap);
-        populateMenuFromFiles("side.txt", "sidePrices.txt", sideMap);
+        populateMenuFromFiles(path+"burgers.txt", path+"burgerPrices.txt", burgersMap);
+        populateMenuFromFiles(path+"drinks.txt", path+"drinksPrices.txt", drinksMap);
+        populateMenuFromFiles(path+"side.txt", path+"sidePrices.txt", sideMap);
     }
 
     public static Menu getInstance() {
