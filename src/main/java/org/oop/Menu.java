@@ -14,8 +14,6 @@ public class Menu {
         -> Optionally, read menu from the .txt file and populate HashMap accordingly along with prices ++++
     2.) Convert arrays below into HashMaps (name, price) ++++
         -> You'll need to refactor the Main and Order classes as well ++++
-    3.) Implement classes (Burger, Drink, SideItem)
-    4.) Compose Order class
     5.) Add receipt class for printing receipt
     6.) Write receipt in PDF file with following attributes:
         -> Date (parse it nicely)
@@ -23,13 +21,14 @@ public class Menu {
         -> Address
         -> Owner
         -> Ordered items with prices and total at the bottom
-     7.) Add ability to remove item from the list (remove from HashMap + deduct from totalExpense)
+     7.) Add ability to remove item from the list (remove from HashMap + deduct from totalExpense) ++++
      8.) Store all receipts on C:\\ disk in a folder named "Receipts"
     */
 
     private Map<String, Double> burgersMap = new HashMap<String, Double>();
     private Map<String, Double> drinksMap = new HashMap<String, Double>();
     private Map<String, Double> sideMap = new HashMap<String, Double>();
+    private double priceToDeduct;
 
     private static Menu instance;
     private Menu() {
@@ -45,6 +44,10 @@ public class Menu {
         }
 
         return instance;
+    }
+
+    public double getPriceToDeduct() {
+        return priceToDeduct;
     }
 
     public Map<String, Double> getBurgersMap() {
@@ -67,16 +70,6 @@ public class Menu {
             System.out.printf("%d. %s %s €%.2f\n",i, menu.getKey(),"-".repeat(2), menu.getValue());
         }
     }
-    public String decideOnMenu(String menuDecision) {
-        switch (menuDecision) {
-            case "d", "D" -> menuDecision = "Drinks";
-            case "b", "B" -> menuDecision = "Burgers";
-            case "s", "S" -> menuDecision = "Side item";
-            default -> menuDecision = "";
-        }
-
-        return menuDecision;
-    }
 
     private void populateMenuFromFiles(String itemName, String itemPrice, Map<String, Double> map) {
         try {
@@ -87,7 +80,7 @@ public class Menu {
             while (nameReader.hasNextLine() && priceReader.hasNextLine()) {
                 String readName = nameReader.nextLine();
                 String readPrice = priceReader.nextLine();
-                map.put(readName, Double.valueOf(readPrice));
+                map.put(readName.toLowerCase(), Double.valueOf(readPrice));
             }
             nameReader.close();
             priceReader.close();
@@ -121,5 +114,16 @@ public class Menu {
             }
         }
         return price;
+    }
+
+    public String modifyOrderList(Map<String, Double> map, String itemName) {
+        for(Map.Entry<String, Double> menu : map.entrySet()) {
+            if (menu.getKey().startsWith(itemName)) {
+                priceToDeduct = menu.getValue();
+                map.remove(menu.getKey());
+                break;
+            }
+        }
+        return itemName;
     }
 }

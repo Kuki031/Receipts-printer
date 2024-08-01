@@ -1,7 +1,5 @@
 package org.oop;
 
-import java.io.FileNotFoundException;
-import java.io.File;
 import java.util.*;
 
 public class Main {
@@ -39,6 +37,7 @@ public class Main {
                 Map<String, Double> selectedMenu = new HashMap<String, Double>();
                 String chosenItem;
                 String decidedItemFromMenu;
+                String wantsToEditOrder;
                 double itemPrice = 0.0;
                 int quantity = 1;
 
@@ -76,7 +75,7 @@ public class Main {
 
                 while (true) {
                     System.out.println("Please enter an item name from the selected menu list.");
-                    decidedItemFromMenu = scanner.nextLine();
+                    decidedItemFromMenu = scanner.nextLine().toLowerCase();
                     chosenItem = menu.decideOnItem(decidedItemFromMenu, selectedMenu);
                     if (chosenItem.isBlank() || chosenItem.isEmpty()) {
                         System.out.println("Item in the menu does not exist. Please try again.");
@@ -100,17 +99,47 @@ public class Main {
                     }
                 }
 
-                generatePrintStatement(orderList, chosenItem, quantity, itemPrice, totalExpense);
+                generateInfoStatement(orderList, chosenItem, quantity, itemPrice, totalExpense);
                 wantsToContinueTheOrder = scanner.nextLine();
                 if (wantsToContinueTheOrder.equalsIgnoreCase("q")) {
-                    break;
+                    while(true) {
+                        System.out.println("Enter 'Y' to edit your order.\nEnter any key to continue to checkout.");
+                        wantsToEditOrder = scanner.nextLine();
+                        if (wantsToEditOrder.equalsIgnoreCase("y")) {
+                            String itemToRemove;
+                            String removedItem;
+                            System.out.println("Please enter the name of the item you would like to remove.");
+                            Thread.sleep(500);
+                            generateOrder(orderList);
+                            itemToRemove = scanner.nextLine().toLowerCase();
+                            removedItem = menu.modifyOrderList(orderList, itemToRemove);
+                            System.out.printf("Item %s removed from the order.\n", removedItem);
+                            Thread.sleep(1000);
+                            generateOrder(orderList);
+                            if (totalExpense > 0) {
+                                totalExpense -= menu.getPriceToDeduct();
+                            } else {
+                                System.out.println("Your order is empty.");
+                            }
+                        } else {
+                            break;
+                        }
+                    }
                 }
+                break;
             }
         }
     }
 
 
-    private static void generatePrintStatement(Map<String, Double> map, String newItem, int quantity, double itemPrice, double totalExpense) {
+
+    private static void generateOrder(Map<String, Double> map) {
+        for (Map.Entry<String, Double> order : map.entrySet()) {
+            System.out.printf("%s %s €%.2f\n", order.getKey(), "-".repeat(4), order.getValue());
+        }
+    }
+
+    private static void generateInfoStatement(Map<String, Double> map, String newItem, int quantity, double itemPrice, double totalExpense) {
         System.out.printf("""
                 You have ordered %s x %d that costs €%.2f.\
                                         
