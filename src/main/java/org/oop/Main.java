@@ -12,7 +12,7 @@ public class Main {
     private static double itemPrice;
 
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("Welcome to the restaurant!\nWould you like to place the order?(Y/N)");
+        System.out.println("Would you like to place the order?(Y/N)");
         boolean decision = false;
 
 
@@ -37,9 +37,10 @@ public class Main {
                 String[] selectedMenu = {};
                 String chosenItem;
                 int decidedItemFromMenu;
+                int quantity = 1;
 
 
-                System.out.println("Menu will load shortly... Please wait!");
+                System.out.println("Menu will load shortly... Please wait.");
                 Thread.sleep(THREAD_DELAY);
 
 
@@ -68,14 +69,25 @@ public class Main {
 
                         itemPrice = menu.assignRandomPrice(menuDecision);
                         orderList.put(chosenItem, itemPrice);
-                        totalExpense += itemPrice;
                         break;
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Must be an integer.");
                     }
                 }
 
-                generatePrintStatement(orderList, chosenItem);
+                while(true) {
+                    System.out.printf("Please enter the quantity of item %s: ", chosenItem);
+                    try {
+                        quantity = Integer.parseInt(scanner.nextLine());
+                        totalExpense += (itemPrice * quantity);
+                        break;
+                    }
+                    catch(NumberFormatException e) {
+                        System.out.println("Invalid input. Must be an integer.");
+                    }
+                }
+
+                generatePrintStatement(orderList, chosenItem, quantity);
                 wantsToContinueTheOrder = scanner.nextLine();
                 if (wantsToContinueTheOrder.equalsIgnoreCase("q")) {
                     break;
@@ -84,9 +96,9 @@ public class Main {
         }
     }
 
-    private static void generatePrintStatement(Map<String, Double> map, String newItem) {
+    private static void generatePrintStatement(Map<String, Double> map, String newItem, int quantity) {
         System.out.printf("""
-                        You have ordered %s that costs €%.2f.\
+                        You have ordered %s x %d that costs €%.2f.\
                         
                         Your current total is: €%.2f\
 
@@ -94,11 +106,11 @@ public class Main {
 
                         Enter 'q' to exit and proceed to checkout.\
                         
-                        Enter any key to continue the order.""", newItem, itemPrice, totalExpense);
+                        Enter any key to continue the order.""", newItem, quantity, itemPrice, totalExpense);
 
         System.out.println("\nYour order currently consists of following items:");
         for (Map.Entry<String, Double> order : map.entrySet()) {
-            System.out.printf("%s %s €%.2f\n", order.getKey(), "-".repeat(4), order.getValue());
+            System.out.printf("%s x %d %s €%.2f\n", order.getKey(), quantity, "-".repeat(4), order.getValue() * quantity);
         }
     }
 }
