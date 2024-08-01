@@ -125,8 +125,8 @@ public class Main {
                             break;
                         }
                     }
+                    break;
                 }
-                break;
             }
         }
     }
@@ -144,16 +144,15 @@ public class Main {
                 You have ordered %s x %d that costs €%.2f.\
                                         
                 Your current total is: €%.2f\
-
-                Would you like to order something else or checkout?
-
-                Enter 'q' to exit and proceed to checkout.\
-                                        
-                Enter any key to continue the order.""", newItem, quantity, itemPrice, totalExpense);
+                \n
+                %s                     
+                """, newItem, quantity, itemPrice, totalExpense, "-".repeat(20));
 
         System.out.println("\nYour order currently consists of following items:");
         for (Map.Entry<String, Double> order : map.entrySet()) {
             System.out.printf("%s %s €%.2f\n", order.getKey(), "-".repeat(4), order.getValue());
         }
+        System.out.println("Enter any key to order something else.");
+        System.out.println("Enter 'q' to continue.");
     }
 }

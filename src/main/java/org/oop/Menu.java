@@ -8,23 +8,6 @@ import java.util.Scanner;
 
 public class Menu {
 
-    /*
-    0.) Add quantity of the selected item ++++
-    1.) Add more items in the list ++++
-        -> Optionally, read menu from the .txt file and populate HashMap accordingly along with prices ++++
-    2.) Convert arrays below into HashMaps (name, price) ++++
-        -> You'll need to refactor the Main and Order classes as well ++++
-    5.) Add receipt class for printing receipt
-    6.) Write receipt in PDF file with following attributes:
-        -> Date (parse it nicely)
-        -> Business subject (name)
-        -> Address
-        -> Owner
-        -> Ordered items with prices and total at the bottom
-     7.) Add ability to remove item from the list (remove from HashMap + deduct from totalExpense) ++++
-     8.) Store all receipts on C:\\ disk in a folder named "Receipts"
-    */
-
     private Map<String, Double> burgersMap = new HashMap<String, Double>();
     private Map<String, Double> drinksMap = new HashMap<String, Double>();
     private Map<String, Double> sideMap = new HashMap<String, Double>();
