@@ -28,9 +28,9 @@ public class Repository {
         return doesExist;
     }
 
-    protected void createEmptyRepository() {
+    private void createEmptyRepository() {
         try {
-            Path path = Paths.get("C:\\Receipts");
+            var path = Paths.get("C:\\Receipts");
             doesExist = true;
             Files.createDirectories(path);
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public class Repository {
     }
 
     public void open(String targetFilePath) throws IOException {
-        Desktop desktop = Desktop.getDesktop();
+        var desktop = Desktop.getDesktop();
         desktop.open(new File(targetFilePath));
     }
 }

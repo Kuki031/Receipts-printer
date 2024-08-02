@@ -28,7 +28,7 @@ public class Receipt {
     }
 
     public void writeReceipt () {
-        int i = 0;
+        var i = 0;
         try {
             FileWriter writter = new FileWriter("C:\\Receipts\\receipt" + "#"+this.receiptID+".txt");
             for (Map.Entry<String, Double> menu : items.entrySet()) {
@@ -44,5 +44,11 @@ public class Receipt {
             System.err.println("An error occurred while writing receipt.");
             e.printStackTrace();
         }
+    }
+
+    public void generateReceipt(Repository repository, Receipt receipt) throws IOException {
+        repository.open("C:\\Receipts");
+        receipt.writeReceipt();
+        repository.open("C:\\Receipts\\receipt#"+receipt.getReceiptID()+".txt");
     }
 }

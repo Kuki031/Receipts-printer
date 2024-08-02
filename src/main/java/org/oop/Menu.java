@@ -11,6 +11,7 @@ public class Menu {
     private final Map<String, Double> burgersMap = new HashMap<String, Double>();
     private final Map<String, Double> drinksMap = new HashMap<String, Double>();
     private final Map<String, Double> sideMap = new HashMap<String, Double>();
+    private Map<String, Double> chosenMap = new HashMap<String, Double>();
     private final static String path = "./src/main/resources/";
 
     private double priceToDeduct;
@@ -23,11 +24,7 @@ public class Menu {
     }
 
     public static Menu getInstance() {
-
-        if (instance == null) {
-            instance = new Menu();
-        }
-
+        if (instance == null) instance = new Menu();
         return instance;
     }
 
@@ -47,9 +44,13 @@ public class Menu {
         return sideMap;
     }
 
+    public Map<String, Double> getChosenMap() {
+        return chosenMap;
+    }
+
     public void listMenu(Map<String, Double> items, String item) {
         System.out.printf("Our %s menu consists of:\n", item);
-        int i = 0;
+        var i = 0;
         for (Map.Entry<String, Double> menu : items.entrySet()) {
             i++;
             System.out.printf("%d. %s %s €%.2f\n",i, menu.getKey(),"-".repeat(2), menu.getValue());
@@ -58,13 +59,13 @@ public class Menu {
 
     private void populateMenuFromFiles(String itemName, String itemPrice, Map<String, Double> map) {
         try {
-            File name = new File(itemName);
-            File price = new File(itemPrice);
-            Scanner nameReader = new Scanner(name);
-            Scanner priceReader = new Scanner(price);
+            var name = new File(itemName);
+            var price = new File(itemPrice);
+            var nameReader = new Scanner(name);
+            var priceReader = new Scanner(price);
             while (nameReader.hasNextLine() && priceReader.hasNextLine()) {
-                String readName = nameReader.nextLine();
-                String readPrice = priceReader.nextLine();
+                var readName = nameReader.nextLine();
+                var readPrice = priceReader.nextLine();
                 map.put(readName.toLowerCase(), Double.valueOf(readPrice));
             }
             nameReader.close();
@@ -75,8 +76,35 @@ public class Menu {
         }
     }
 
+    public Map<String, Double> showAvailableMenus(Scanner scanner) {
+        while (true) {
+            System.out.println("Which menu would you like to list? Please enter 'D' for drinks, 'B' for burgers or 'S' for side items!");
+            var menuDecision = scanner.nextLine();
+            var hasDecidedOnMenu = false;
+            switch (menuDecision.toLowerCase()) {
+                case "d" -> {
+                    listMenu(getDrinksMap(), "drinks");
+                    this.chosenMap = getDrinksMap();
+                    hasDecidedOnMenu = true;
+                }
+                case "b" -> {
+                    listMenu(getBurgersMap(), "burgers");
+                    this.chosenMap = getBurgersMap();
+                    hasDecidedOnMenu = true;
+                }
+                case "s" -> {
+                    listMenu(getSideMap(), "side items");
+                    this.chosenMap = getSideMap();
+                    hasDecidedOnMenu = true;
+                }
+            }
+            if (hasDecidedOnMenu) return this.chosenMap;
+            else System.err.println("Wrong input. Enter either D, B or S.");
+        }
+    }
+
     public String decideOnItem(String itemName, Map<String, Double> items) {
-        boolean exists = false;
+        var exists = false;
         for (Map.Entry<String, Double> menu : items.entrySet()) {
             if (itemName.equalsIgnoreCase(menu.getKey())) {
                 exists = true;
@@ -91,7 +119,7 @@ public class Menu {
     }
 
     public double readItemPrice(String itemName, Map<String, Double> items) {
-        double price = 0.0;
+        var price = 0.0;
         for(Map.Entry<String, Double> menu : items.entrySet()) {
             if (itemName.equalsIgnoreCase(menu.getKey())) {
                 price = menu.getValue();
