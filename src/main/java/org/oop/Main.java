@@ -6,11 +6,10 @@ import java.util.*;
 public class Main {
     private static final Menu menu = Menu.getInstance();
     private static final Scanner scanner = new Scanner(System.in);
-    private static final int THREAD_DELAY = (int) (1000 + Math.floor(Math.random() * 1500));
-
     private static final Map<String, Double> orderList = new HashMap<String, Double>();
     private static double totalExpense;
     private static boolean continueOrder = true;
+
     private static final Repository repository= Repository.getInstance();
     private static Order order;
 
@@ -68,7 +67,6 @@ public class Main {
                     if (totalExpense < 0) totalExpense = 0;
                 } else System.err.println("Item not found in the order.");
 
-                Thread.sleep(1000);
                 order.generateOrder(orderList);
 
             } else {
@@ -83,7 +81,6 @@ public class Main {
 
                 var wantsToContinueTheOrder = "";
                 System.out.println("Menu will load shortly... Please wait.");
-                Thread.sleep(THREAD_DELAY);
 
                 menu.showAvailableMenus(scanner);
                 showAvailableItems();
