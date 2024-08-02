@@ -30,7 +30,7 @@ public class Repository {
 
     private void createEmptyRepository() {
         try {
-            var path = Paths.get("C:\\Receipts");
+            var path = Paths.get(Configuration.getInstance().getFILE_PATH());
             doesExist = true;
             Files.createDirectories(path);
         } catch (IOException e) {

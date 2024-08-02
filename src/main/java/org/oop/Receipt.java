@@ -42,7 +42,7 @@ public class Receipt {
 
     public void writeReceipt () {
         try {
-            FileWriter writer = new FileWriter("C:\\Receipts\\receipt" + "#" + this.receiptID+".txt");
+            FileWriter writer = new FileWriter(Configuration.getInstance().getFILE_PATH() + "receipt#" + this.receiptID+".txt");
             writeReceiptHead(writer);
             writeReceiptBody(writer);
             writeReceiptFooter(writer);
@@ -55,9 +55,9 @@ public class Receipt {
     }
 
     public void generateReceipt(Repository repository, Receipt receipt) throws IOException {
-        repository.open("C:\\Receipts");
+        repository.open(Configuration.getInstance().getFILE_PATH());
         receipt.writeReceipt();
-        repository.open("C:\\Receipts\\receipt#"+receipt.getReceiptID()+".txt");
+        repository.open(Configuration.getInstance().getFILE_PATH() + "receipt#"+receipt.getReceiptID()+".txt");
     }
 
     private String formatDate(LocalDateTime date) {

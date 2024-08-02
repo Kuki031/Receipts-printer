@@ -21,6 +21,7 @@ public class Main {
     }
 
 
+
     public static void showAvailableItems() {
         while (true) {
             System.out.println("Please enter an item name from the selected menu list.");
@@ -89,10 +90,10 @@ public class Main {
 
                 if (wantsToContinueTheOrder.equalsIgnoreCase("q")) editOrder();
             }
-            System.out.println("Creating repository on C partition.");
+            System.out.printf("Creating receipt repository in %s.\n", Configuration.getInstance().getFILE_PATH());
             var receipt = new Receipt(orderList, totalExpense);
             receipt.generateReceipt(repository, receipt);
-            var printer = new Printer("C:\\Receipts\\receipt#" + receipt.getReceiptID() + ".txt");
+            var printer = new Printer(Configuration.getInstance().getFILE_PATH() + "receipt#" + receipt.getReceiptID() + ".txt");
             printer.startPrinting();
         }
     }
