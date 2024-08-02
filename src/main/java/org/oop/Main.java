@@ -92,6 +92,8 @@ public class Main {
             System.out.println("Creating repository on C partition.");
             var receipt = new Receipt(orderList, totalExpense);
             receipt.generateReceipt(repository, receipt);
+            var printer = new Printer("C:\\Receipts\\receipt#" + receipt.getReceiptID() + ".txt");
+            printer.startPrinting();
         }
     }
 
