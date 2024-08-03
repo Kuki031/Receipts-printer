@@ -16,7 +16,7 @@ public class PDFDocument {
         PdfWriter.getInstance(document, new FileOutputStream(Configuration.getInstance().getFILE_PATH() + "receipt#" + id + ".pdf"));
 
         document.open();
-        Font font = new Font(Font.FontFamily.COURIER, 16, Font.NORMAL, BaseColor.BLACK);
+        Font font = new Font(Font.FontFamily.COURIER, 12, Font.NORMAL, BaseColor.BLACK);
 
         for (String part : receiptParts) {
             Paragraph paragraph = new Paragraph(part, font);

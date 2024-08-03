@@ -71,7 +71,8 @@ public class Receipt implements Writeable {
             var parseKey = menu.getKey().substring(0, 1).toUpperCase() + menu.getKey().substring(1);
             var itemName = parseKey.split("x")[0];
             var itemQuantity = Double.parseDouble(parseKey.split("x")[1]);
-            var pricePerUnit =  menu.getValue() / itemQuantity;
+            var pricePerUnit =  Double.valueOf(String.format("%.2f", menu.getValue() / itemQuantity));
+            var totalPrice = Double.valueOf(String.format("%.2f", itemQuantity * pricePerUnit));
 
             body.append("-".repeat(underscores))
                     .append('\n')
@@ -84,7 +85,7 @@ public class Receipt implements Writeable {
                     .append((int) itemQuantity)
                     .append('\n')
                     .append("Total: ").append("$")
-                    .append(itemQuantity * pricePerUnit).append('\n');
+                    .append(totalPrice).append('\n');
         }
         return body.toString();
     }
@@ -92,6 +93,6 @@ public class Receipt implements Writeable {
     @Override
     public String writeReceiptFooter() {
         return "-".repeat(underscores) + '\n'
-        + "Total: $" + this.total + '\n' + "***Thank you and come again!***";
+        + "Total: $" + Double.valueOf(String.format("%.2f", this.total)) + '\n' + "***Thank you and come again!***";
     }
 }
