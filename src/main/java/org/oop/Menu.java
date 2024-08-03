@@ -23,12 +23,12 @@ public class Menu {
 
     private static Menu instance;
     private Menu() {
-        populateNameFilesWithFaker("food");
-        populatePriceFilesWithFaker("food");
-        populateNameFilesWithFaker("beers");
-        populatePriceFilesWithFaker("beers");
-        populateNameFilesWithFaker("sides");
-        populatePriceFilesWithFaker("sides");
+        populateFilesWithFaker("food", "name");
+        populateFilesWithFaker("food", "price");
+        populateFilesWithFaker("beers", "name");
+        populateFilesWithFaker("beers", "price");
+        populateFilesWithFaker("sides", "name");
+        populateFilesWithFaker("sides", "price");
         populateMenuFromFiles(path+"food.txt", path+"food_prices.txt", foodMap);
         populateMenuFromFiles(path+"beers.txt", path+"beers_prices.txt", drinksMap);
         populateMenuFromFiles(path+"sides.txt", path+"sides_prices.txt", sideMap);
@@ -68,47 +68,15 @@ public class Menu {
         }
     }
 
-    private void populateNameFilesWithFaker(String itemName) {
+    private void populateFilesWithFaker(String itemName, String fileContent) {
         switch (itemName) {
             case "food" -> {
                 try {
-                    FileWriter foodNameWriter = new FileWriter(path + "food.txt");
-                    for(int i = 0 ; i < 10 ; i++) foodNameWriter.write(faker.food().dish() + '\n');
-                    foodNameWriter.close();
-                } catch (IOException e) {
-                    System.out.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
-            case "beers" -> {
-                try {
-                    FileWriter writer = new FileWriter(path + "beers.txt");
-                    for(int i = 0 ; i < 10 ; i++) writer.write(faker.beer().malt() + '\n');
-                    writer.close();
-                } catch (IOException e) {
-                    System.out.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
-            case "sides" -> {
-                try {
-                    FileWriter writer = new FileWriter(path + "sides.txt");
-                    for(int i = 0 ; i < 10 ; i++) writer.write(faker.food().spice() + '\n');
-                    writer.close();
-                } catch (IOException e) {
-                    System.out.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void populatePriceFilesWithFaker(String itemName) {
-        switch (itemName) {
-            case "food" -> {
-                try {
-                    FileWriter writer = new FileWriter(path + "food_prices.txt");
-                    for(int i = 0 ; i < 10 ; i++) writer.write(String.valueOf(faker.number().randomDouble(1, 5, 10)) + '\n');
+                    FileWriter writer = new FileWriter((fileContent.equalsIgnoreCase("name")) ? path + "food.txt" : path + "food_prices.txt");
+                    for(int i = 0 ; i < 10 ; i++) {
+                        if (fileContent.equalsIgnoreCase("name")) writer.write(faker.food().dish() + '\n');
+                         else writer.write(String.valueOf(faker.number().randomDouble(1, 5, 10)) + '\n');
+                    }
                     writer.close();
                 } catch (IOException e) {
                     System.out.println("An error occurred.");
@@ -117,8 +85,11 @@ public class Menu {
             }
             case "beers" -> {
                 try {
-                    FileWriter writer = new FileWriter(path + "beers_prices.txt");
-                    for(int i = 0 ; i < 10 ; i++) writer.write(String.valueOf(faker.number().randomDouble(1, 3, 7)) + '\n');
+                    FileWriter writer = new FileWriter((fileContent.equalsIgnoreCase("name")) ? path + "beers.txt" : path + "beers_prices.txt");
+                    for(int i = 0 ; i < 10 ; i++) {
+                        if (fileContent.equalsIgnoreCase("name")) writer.write(faker.beer().malt() + '\n');
+                         else writer.write(String.valueOf(faker.number().randomDouble(1, 3, 7)) + '\n');
+                    };
                     writer.close();
                 } catch (IOException e) {
                     System.out.println("An error occurred.");
@@ -127,8 +98,11 @@ public class Menu {
             }
             case "sides" -> {
                 try {
-                    FileWriter writer = new FileWriter(path + "sides_prices.txt");
-                    for(int i = 0 ; i < 10 ; i++) writer.write(String.valueOf(faker.number().randomDouble(1, 1, 3)) + '\n');
+                    FileWriter writer = new FileWriter((fileContent.equalsIgnoreCase("name")) ? path + "sides.txt" : path + "sides_prices.txt");
+                    for(int i = 0 ; i < 10 ; i++) {
+                        if (fileContent.equalsIgnoreCase("name")) writer.write(faker.food().spice() + '\n');
+                        else writer.write(String.valueOf(faker.number().randomDouble(1, 1, 3)) + '\n');
+                    }
                     writer.close();
                 } catch (IOException e) {
                     System.out.println("An error occurred.");
