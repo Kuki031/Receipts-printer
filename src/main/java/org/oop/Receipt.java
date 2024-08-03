@@ -1,5 +1,7 @@
 package org.oop;
 
+import com.github.javafaker.Faker;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,13 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Receipt implements Writeable {
-    private String companyName;
-    private String receiptName;
-    private String operaterName;
-    private LocalDateTime date;
+    private final String companyName;
+    private final String receiptName;
+    private final String operatorName;
+    private final String address;
+    private final LocalDateTime date;
     private Map<String, Double> items = new HashMap<String, Double>();
     private double total;
-    private int receiptID;
+    private final int receiptID;
     private static final int underscores = 30;
     private static final int randMaxValue = Integer.MAX_VALUE;
 
@@ -25,9 +28,11 @@ public class Receipt implements Writeable {
     }
 
     public Receipt() {
-        this.companyName = "Restaurant XYZ";
+        Faker faker = new Faker();
+        this.companyName = "Restaurant " + faker.funnyName().name();
+        this.operatorName = faker.name().fullName();
+        this.address = faker.address().streetAddress() + ", " + faker.address().city();
         this.receiptName = "Food receipt";
-        this.operaterName = "John Doe";
         this.receiptID = (int) Math.floor(Math.random() * randMaxValue);
         this.date = LocalDateTime.now();
     }
@@ -50,10 +55,11 @@ public class Receipt implements Writeable {
     public String writeReceiptHead() {
         return "-".repeat(underscores) + '\n'
         + this.receiptName + '\n'
-        + this.companyName + '\n' + '\n'
+        + "Company: " + this.companyName + '\n'
+        + "Address: " + this.address+ "\n\n"
         + "Receipt ID: " + "#" + this.receiptID + '\n'
         + "Date: " + formatDate(this.date) + '\n'
-        + "Operator: " + this.operaterName + '\n';
+        + "Operator: " + this.operatorName + '\n';
     }
 
     @Override
@@ -86,6 +92,6 @@ public class Receipt implements Writeable {
     @Override
     public String writeReceiptFooter() {
         return "-".repeat(underscores) + '\n'
-        + "Total: $" + this.total;
+        + "Total: $" + this.total + '\n' + "***Thank you and come again!***";
     }
 }

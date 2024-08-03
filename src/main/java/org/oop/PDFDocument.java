@@ -20,7 +20,7 @@ public class PDFDocument {
 
         for (String part : receiptParts) {
             Paragraph paragraph = new Paragraph(part, font);
-            paragraph.setAlignment(Element.ALIGN_CENTER);
+            paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
             paragraph.setSpacingAfter(10f);
             document.add(paragraph);
         }
