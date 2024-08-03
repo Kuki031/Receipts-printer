@@ -1,5 +1,7 @@
 package org.oop;
 
+import com.itextpdf.text.DocumentException;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -13,7 +15,7 @@ public class Main {
     private static final Repository repository= Repository.getInstance();
     private static Order order;
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws InterruptedException, IOException, DocumentException {
         System.out.println("Would you like to place the order?(Y/N)");
         order = new Order();
         var decision = order.initialDecision(scanner);
@@ -77,7 +79,7 @@ public class Main {
         }
     }
 
-    private static void orderProcedure() throws InterruptedException, IOException {
+    private static void orderProcedure() throws InterruptedException, IOException, DocumentException {
             while (continueOrder) {
 
                 var wantsToContinueTheOrder = "";
@@ -92,8 +94,11 @@ public class Main {
             }
             System.out.printf("Creating receipt repository in %s.\n", Configuration.getInstance().getFILE_PATH());
             var receipt = new Receipt(orderList, totalExpense);
-            receipt.generateReceipt(repository, receipt);
-            var printer = new Printer(Configuration.getInstance().getFILE_PATH() + "receipt#" + receipt.getReceiptID() + ".txt");
+            var pdfDocument = new PDFDocument();
+
+            pdfDocument.startDrawingPDF(new String[]{receipt.writeReceiptHead(), receipt.writeReceiptBody(), receipt.writeReceiptFooter()}, receipt.getReceiptID());
+            receipt.openDirectory(repository, receipt);
+            var printer = new Printer(Configuration.getInstance().getFILE_PATH() + "receipt#" + receipt.getReceiptID() + ".pdf");
             printer.startPrinting();
         }
     }

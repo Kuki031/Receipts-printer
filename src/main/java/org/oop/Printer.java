@@ -39,14 +39,14 @@ public class Printer implements Printable {
         Graphics2D g2d = (Graphics2D) graphics;
         g2d.setFont(new Font("Serif", Font.PLAIN, 12));
 
-        int y = (int) pageFormat.getImageableY();
-        int lineHeight = g2d.getFontMetrics().getHeight();
-        int pageHeight = (int) pageFormat.getImageableHeight();
-        int linesPerPage = pageHeight / lineHeight;
+        var y = (int) pageFormat.getImageableY();
+        var lineHeight = g2d.getFontMetrics().getHeight();
+        var pageHeight = (int) pageFormat.getImageableHeight();
+        var linesPerPage = pageHeight / lineHeight;
 
         try (BufferedReader br = new BufferedReader(new FileReader(this.path))) {
             String line;
-            int lineNumber = 0;
+            var lineNumber = 0;
 
             while ((line = br.readLine()) != null) {
                 if (lineNumber >= pageIndex * linesPerPage && lineNumber < (pageIndex + 1) * linesPerPage) {

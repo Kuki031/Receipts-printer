@@ -1,14 +1,12 @@
 package org.oop;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Receipt {
+public class Receipt implements Writeable {
     private String companyName;
     private String receiptName;
     private String operaterName;
@@ -16,11 +14,9 @@ public class Receipt {
     private Map<String, Double> items = new HashMap<String, Double>();
     private double total;
     private int receiptID;
-    private static final int blankSpaces = 15;
-    private static final int centerSpace = 35;
-    private static final int underscores = blankSpaces + centerSpace;
+    private static final int underscores = 30;
     private static final int randMaxValue = Integer.MAX_VALUE;
-    private final String totalString = "Total: " + "€";
+
 
     public Receipt(Map<String, Double> items, double total) {
         this();
@@ -40,24 +36,9 @@ public class Receipt {
         return receiptID;
     }
 
-    public void writeReceipt () {
-        try {
-            FileWriter writer = new FileWriter(Configuration.getInstance().getFILE_PATH() + "receipt#" + this.receiptID+".txt");
-            writeReceiptHead(writer);
-            writeReceiptBody(writer);
-            writeReceiptFooter(writer);
-            writer.close();
-            System.out.println("Receipt written successfully.");
-        } catch (IOException e) {
-            System.err.println("An error occurred while writing receipt.");
-            e.printStackTrace();
-        }
-    }
-
-    public void generateReceipt(Repository repository, Receipt receipt) throws IOException {
+    public void openDirectory(Repository repository, Receipt receipt) throws IOException {
         repository.open(Configuration.getInstance().getFILE_PATH());
-        receipt.writeReceipt();
-        repository.open(Configuration.getInstance().getFILE_PATH() + "receipt#"+receipt.getReceiptID()+".txt");
+        repository.open(Configuration.getInstance().getFILE_PATH() + "receipt#"+receipt.getReceiptID()+".pdf");
     }
 
     private String formatDate(LocalDateTime date) {
@@ -65,17 +46,20 @@ public class Receipt {
         return date.format(formatObj);
     }
 
-    private void writeReceiptHead(FileWriter writer) throws IOException {
-        writer.write(" ".repeat(blankSpaces) + "-".repeat(underscores) + " ".repeat(blankSpaces)+'\n');
-        writer.write(" ".repeat(centerSpace) + this.receiptName + '\n');
-        writer.write(" ".repeat(centerSpace) + this.companyName + '\n' + '\n');
-        writer.write(" ".repeat(blankSpaces) + "Receipt ID: " + "#" + this.receiptID + '\n');
-        writer.write(" ".repeat(blankSpaces) + "Date: " + formatDate(this.date) + '\n');
-        writer.write(" ".repeat(blankSpaces) + "Operator: " + this.operaterName + '\n');
+    @Override
+    public String writeReceiptHead() {
+        return "-".repeat(underscores) + '\n'
+        + this.receiptName + '\n'
+        + this.companyName + '\n' + '\n'
+        + "Receipt ID: " + "#" + this.receiptID + '\n'
+        + "Date: " + formatDate(this.date) + '\n'
+        + "Operator: " + this.operaterName + '\n';
     }
 
-    private void writeReceiptBody(FileWriter writer) throws IOException {
+    @Override
+    public String writeReceiptBody() {
         var i = 0;
+        StringBuilder body = new StringBuilder();
         for (Map.Entry<String, Double> menu : items.entrySet()) {
             i++;
             var parseKey = menu.getKey().substring(0, 1).toUpperCase() + menu.getKey().substring(1);
@@ -83,17 +67,25 @@ public class Receipt {
             var itemQuantity = Double.parseDouble(parseKey.split("x")[1]);
             var pricePerUnit =  menu.getValue() / itemQuantity;
 
-
-            writer.write(" ".repeat(blankSpaces) + "-".repeat(underscores) + '\n');
-            writer.write(" ".repeat(blankSpaces) + i + ". " + itemName + '\n');
-            writer.write(" ".repeat(blankSpaces) + "Unit price: " + "€" +pricePerUnit + '\n');
-            writer.write(" ".repeat(blankSpaces) + "Quantity: " + (int) itemQuantity + '\n');
-            writer.write(" ".repeat(blankSpaces) + "Total: " + "€" + itemQuantity * pricePerUnit + '\n');
+            body.append("-".repeat(underscores))
+                    .append('\n')
+                    .append(i).append(". ")
+                    .append(itemName)
+                    .append('\n')
+                    .append("Unit price: ").append("$")
+                    .append(pricePerUnit).append('\n')
+                    .append("Quantity: ")
+                    .append((int) itemQuantity)
+                    .append('\n')
+                    .append("Total: ").append("$")
+                    .append(itemQuantity * pricePerUnit).append('\n');
         }
+        return body.toString();
     }
 
-    private void writeReceiptFooter(FileWriter writer) throws IOException {
-        writer.write(" ".repeat(blankSpaces) + "-".repeat(underscores) + '\n');
-        writer.write(" ".repeat((blankSpaces + underscores) - totalString.length()) + totalString + this.total);
+    @Override
+    public String writeReceiptFooter() {
+        return "-".repeat(underscores) + '\n'
+        + "Total: $" + this.total;
     }
 }
