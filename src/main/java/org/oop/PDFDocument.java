@@ -16,12 +16,11 @@ public class PDFDocument {
         PdfWriter.getInstance(document, new FileOutputStream(Configuration.getInstance().getFILE_PATH() + "receipt#" + id + ".pdf"));
 
         document.open();
-        Font font = new Font(Font.FontFamily.COURIER, 12, Font.NORMAL, BaseColor.BLACK);
-
+        Font font = new Font(Font.FontFamily.COURIER, 12, Font.BOLD, BaseColor.BLACK);
         for (String part : receiptParts) {
             Paragraph paragraph = new Paragraph(part, font);
             paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
-            paragraph.setSpacingAfter(10f);
+            paragraph.setSpacingAfter(5f);
             document.add(paragraph);
         }
         document.close();

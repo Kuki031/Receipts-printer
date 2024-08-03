@@ -131,9 +131,9 @@ public class Menu {
         }
     }
 
-    public Map<String, Double> showAvailableMenus(Scanner scanner) {
+    public void showAvailableMenus(Scanner scanner) {
         while (true) {
-            System.out.println("Which menu would you like to list? Please enter 'B' for beers, 'F' for food or 'S' for side items!");
+            System.out.println("Which menu would you like to list? Please enter 'B' for Beer malts, 'F' for Food or 'S' for Side items!");
             var menuDecision = scanner.nextLine();
             var hasDecidedOnMenu = false;
             switch (menuDecision.toLowerCase()) {
@@ -153,7 +153,7 @@ public class Menu {
                     hasDecidedOnMenu = true;
                 }
             }
-            if (hasDecidedOnMenu) return this.chosenMap;
+            if (hasDecidedOnMenu) return;
             else System.err.println("Wrong input. Enter either B, F or S.");
         }
     }
